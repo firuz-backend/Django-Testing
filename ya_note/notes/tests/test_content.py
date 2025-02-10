@@ -49,7 +49,7 @@ class TestAuthorizedPages(TestCase):
                 self.assertIn('form', response.context)
                 self.assertIsInstance(response.context['form'], NoteForm)
 
-    def test_anotherUser_list_hasnt_another_user_notes(self):
+    def test_another_user_list_hasnt_another_user_notes(self):
         self.client.force_login(self.reader)
         response = self.client.get(self.LIST_PAGE_URL)
         object_list = response.context['object_list']

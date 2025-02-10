@@ -7,7 +7,9 @@ from news.forms import BAD_WORDS, WARNING
 from news.models import Comment
 
 
-def test_anonymous_user_cant_create_comment(client, pk_for_args_news, comment_data):
+def test_anonymous_user_cant_create_comment(
+    client, pk_for_args_news, comment_data
+):
     url = reverse('news:detail', args=pk_for_args_news)
     response = client.post(url, comment_data)
 
@@ -62,7 +64,9 @@ def test_user_cant_delete_comment_of_another_user(not_author_client, comment):
     assert Comment.objects.count() == 1
 
 
-def test_author_can_edit_comment(author_client, pk_for_args_comment, pk_for_args_news):
+def test_author_can_edit_comment(
+    author_client, pk_for_args_comment, pk_for_args_news
+):
     url = reverse('news:edit', args=pk_for_args_comment)
     data = {'text': 'It is edited comment'}
 

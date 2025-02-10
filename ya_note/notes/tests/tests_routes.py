@@ -37,8 +37,11 @@ class TestRoutes(TestCase):
                 response = self.client.get(url)
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
-    def test_availability_for_owner_and_noOwner_user(self):
-        '''The Test is for checking editing, deleting and detail show for owner of note and no owner'''
+    def test_availability_for_owner_and_no_owner_user(self):
+        """
+        The Test is for checking editing, deleting and
+        detail show for ownerof note and no owner
+        """
         user_statuses = (
             (self.author, HTTPStatus.OK),
             (self.another_author, HTTPStatus.NOT_FOUND)
