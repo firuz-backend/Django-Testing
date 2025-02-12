@@ -1,11 +1,11 @@
-import pytest
 from datetime import datetime, timedelta
 
-from django.test.client import Client
 from django.conf import settings
+from django.test.client import Client
 from django.utils import timezone
+import pytest
 
-from news.models import News, Comment
+from news.models import Comment, News
 
 
 @pytest.fixture
@@ -33,7 +33,7 @@ def not_author_client(not_author):
 
 
 @pytest.fixture
-def news():
+def news(author):
     news = News.objects.create(title='Заголовок', text='Текст')
     return news
 
@@ -49,22 +49,7 @@ def comment(author, news):
 
 
 @pytest.fixture
-def pk_for_args_news(author, news):
-    return (news.pk, )
-
-
-@pytest.fixture
-def pk_for_args_comment(comment):
-    return (comment.pk, )
-
-
-@pytest.fixture
-def news_count(news):
-    return News.objects.count()
-
-
-@pytest.fixture
-def ten_news():
+def news_batch(author):
     today = datetime.today()
     all_news = [
         News(
@@ -75,11 +60,6 @@ def ten_news():
         for index in range(settings.NEWS_COUNT_ON_HOME_PAGE + 1)
     ]
     News.objects.bulk_create(all_news)
-
-
-@pytest.fixture
-def ten_news_count(author, ten_news):
-    return (News.objects.count() - 1)
 
 
 @pytest.fixture
@@ -94,5 +74,14 @@ def ten_comments(author, news):
 
 
 @pytest.fixture
-def comment_data():
-    return {'text': 'Текст комментария'}
+def routes():
+    routes = {
+        'home': 'news:home',
+        'news_detail': 'news:detail',
+        'news_edit': 'news:edit',
+        'news_delete': 'news:delete',
+        'login': 'users:login',
+        'logout': 'users:logout',
+        'signup': 'users:signup',
+    }
+    return routes
