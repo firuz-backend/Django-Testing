@@ -42,10 +42,7 @@ class BaseTestCase(TestCase):
         cls.note_add_url = cls.routes['add']
 
 
-class BaseLogicTestCase(BaseTestCase):
-    NOTE_TEXT = 'It is text'
-    NEW_NOTE_TEXT = 'It is new note TEXT'
-
+class MixinTestCase(BaseTestCase):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
@@ -56,6 +53,15 @@ class BaseLogicTestCase(BaseTestCase):
             slug=cls.form_data['slug'],
             author=cls.author,
         )
+
+
+class BaseLogicTestCase(MixinTestCase):
+    NOTE_TEXT = 'It is text'
+    NEW_NOTE_TEXT = 'It is new note TEXT'
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
 
         cls.edit_url = reverse('notes:edit', args=(cls.note.slug,))
         cls.delete_url = reverse('notes:delete', args=(cls.note.slug,))

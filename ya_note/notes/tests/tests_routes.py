@@ -4,23 +4,17 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from notes.models import Note
-from .base import BaseTestCase
+from .base import MixinTestCase
 
 
 User = get_user_model()
 
 
-class TestRoutes(BaseTestCase):
+class TestRoutes(MixinTestCase):
 
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        cls.note = Note.objects.create(
-            title='Заголовок',
-            text='Текст заметки',
-            slug='note-slug',
-            author=cls.author,
-        )
 
     def test_page_availabality_for_anonymous_user(self):
         urls = (

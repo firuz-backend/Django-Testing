@@ -4,22 +4,16 @@ from django.urls import reverse
 from notes.forms import NoteForm
 from notes.models import Note
 
-from .base import BaseTestCase
+from .base import MixinTestCase
 
 User = get_user_model()
 
 
-class TestAuthorizedPages(BaseTestCase):
+class TestAuthorizedPages(MixinTestCase):
 
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        cls.note = Note.objects.create(
-            title='Заголовок',
-            text='Текст заметки',
-            slug='note-slug',
-            author=cls.author,
-        )
 
     def test_create_and_update_page_has_form(self):
 
