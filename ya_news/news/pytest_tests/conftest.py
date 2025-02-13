@@ -1,9 +1,10 @@
 from datetime import datetime, timedelta
 
+import pytest
 from django.conf import settings
 from django.test.client import Client
+from django.urls import reverse
 from django.utils import timezone
-import pytest
 
 from news.models import Comment, News
 
@@ -74,14 +75,14 @@ def ten_comments(author, news):
 
 
 @pytest.fixture
-def routes():
+def routes(author, news, comment):
     routes = {
-        'home': 'news:home',
-        'news_detail': 'news:detail',
-        'news_edit': 'news:edit',
-        'news_delete': 'news:delete',
-        'login': 'users:login',
-        'logout': 'users:logout',
-        'signup': 'users:signup',
+        'home': reverse('news:home'),
+        'news_detail': reverse('news:detail', args=(news.pk,)),
+        'news_edit': reverse('news:edit', args=(comment.pk,)),
+        'news_delete': reverse('news:delete', args=(comment.pk,)),
+        'login': reverse('users:login'),
+        'logout': reverse('users:logout'),
+        'signup': reverse('users:signup'),
     }
     return routes

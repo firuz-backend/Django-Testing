@@ -1,6 +1,5 @@
-from django.conf import settings
-from django.urls import reverse
 import pytest
+from django.conf import settings
 
 from news.forms import CommentForm
 
@@ -9,7 +8,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_news_count(client, news_batch, routes):
-    url = reverse(routes['home'])
+    url = routes['home']
     response = client.get(url)
 
     assert (
@@ -19,7 +18,7 @@ def test_news_count(client, news_batch, routes):
 
 
 def test_ten_news_order(news_batch, client, routes):
-    url = reverse(routes['home'])
+    url = routes['home']
     response = client.get(url)
 
     news = response.context['object_list']
@@ -30,7 +29,7 @@ def test_ten_news_order(news_batch, client, routes):
 
 
 def test_ten_comment_order(client, ten_comments, news, routes):
-    url = reverse(routes['news_detail'], args=(news.pk, ))
+    url = routes['news_detail']
     response = client.get(url)
 
     assert 'news' in response.context
@@ -43,14 +42,14 @@ def test_ten_comment_order(client, ten_comments, news, routes):
 
 
 def test_anonymous_client_has_no_form(client, news, routes):
-    url = reverse(routes['news_detail'], args=(news.pk,))
+    url = routes['news_detail']
     response = client.get(url)
 
     assert 'form' not in response.context
 
 
 def test_authorized_client_has_form(author_client, news, routes):
-    url = reverse(routes['news_detail'], args=(news.pk,))
+    url = routes['news_detail']
     response = author_client.get(url)
 
     assert 'form' in response.context
