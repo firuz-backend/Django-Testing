@@ -54,14 +54,8 @@ class MixinTestCase(BaseTestCase):
             author=cls.author,
         )
 
-
-class BaseLogicTestCase(MixinTestCase):
-    NOTE_TEXT = 'It is text'
-    NEW_NOTE_TEXT = 'It is new note TEXT'
-
-    @classmethod
-    def setUpTestData(cls):
-        super().setUpTestData()
-
-        cls.edit_url = reverse('notes:edit', args=(cls.note.slug,))
-        cls.delete_url = reverse('notes:delete', args=(cls.note.slug,))
+        cls.routes.update({
+            'edit': reverse('notes:edit', args=(cls.note.slug,)),
+            'detail': reverse('notes:detail', args=(cls.note.slug,)),
+            'delete': reverse('notes:delete', args=(cls.note.slug,)),
+        })

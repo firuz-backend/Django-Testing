@@ -2,27 +2,20 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from notes.forms import NoteForm
-
 from .base import MixinTestCase
-
-User = get_user_model()
 
 
 class TestAuthorizedPages(MixinTestCase):
 
-    @classmethod
-    def setUpTestData(cls):
-        super().setUpTestData()
-
     def test_create_and_update_page_has_form(self):
 
         urls = (
-            (self.routes['add'], None),
-            (self.routes['edit'], (self.note.slug, ))
+            'add',
+            'edit'
         )
-        for name, args in urls:
-            with self.subTest(name=name):
-                url = name if not args else reverse(name, args=args)
+        for url in urls:
+            url = self.routes[url]
+            with self.subTest(url=url):
                 response = self.author_client.get(url)
                 self.assertIn('form', response.context)
                 self.assertIsInstance(response.context['form'], NoteForm)

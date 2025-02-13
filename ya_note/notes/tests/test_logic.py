@@ -5,16 +5,10 @@ from pytils.translit import slugify
 
 from notes.forms import WARNING
 from notes.models import Note
-from .base import BaseTestCase, BaseLogicTestCase
-
-User = get_user_model()
+from .base import BaseTestCase, MixinTestCase
 
 
 class NoteCreation(BaseTestCase):
-
-    @classmethod
-    def setUpTestData(cls):
-        super().setUpTestData()
 
     def test_anonymous_user_cant_create_note(self):
         note_count = Note.objects.count()
@@ -41,21 +35,20 @@ class NoteCreation(BaseTestCase):
         self.assertEqual(note.author, self.author)
 
 
-class TestNotetEditDelete(BaseLogicTestCase):
-
-    @classmethod
-    def setUpTestData(cls):
-        super().setUpTestData()
+class TestNotetEditDelete(MixinTestCase):
+    NOTE_TEXT = 'It is text'
+    NEW_NOTE_TEXT = 'It is new note TEXT'
 
     def test_not_unique_slug(self):
+        note_count = Note.objects.count()
         self.form_data['slug'] = self.note.slug
         response = self.author_client.post(
             self.note_add_url, data=self.form_data)
 
+        self.assertEqual(Note.objects.count(), note_count)
         self.assertFormError(
             response, form='form', field='slug',
             errors=(self.note.slug + WARNING))
-        self.assertEqual(Note.objects.count(), 1)
 
     def test_empty_slug(self):
         Note.objects.all().delete()
@@ -73,7 +66,8 @@ class TestNotetEditDelete(BaseLogicTestCase):
 
     def test_author_can_edit_note(self):
         self.form_data['text'] = self.NEW_NOTE_TEXT
-        response = self.author_client.post(self.edit_url, data=self.form_data)
+        response = self.author_client.post(
+            self.routes['edit'], data=self.form_data)
         self.assertRedirects(response, self.routes['success'])
 
         refreshed_note = Note.objects.get(pk=self.note.id)
@@ -81,11 +75,12 @@ class TestNotetEditDelete(BaseLogicTestCase):
         self.assertEqual(refreshed_note.text, self.form_data['text'])
         self.assertEqual(refreshed_note.title, self.form_data['title'])
         self.assertEqual(refreshed_note.slug, self.form_data['slug'])
-        self.assertEqual(refreshed_note.author, self.author)
+        self.assertEqual(refreshed_note.author, self.note.author)
 
     def test_other_user_cant_edit_note(self):
         self.form_data['text'] = self.NEW_NOTE_TEXT
-        response = self.reader_client.post(self.edit_url, data=self.form_data)
+        response = self.reader_client.post(
+            self.routes['edit'], data=self.form_data)
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
         refreshed_note = Note.objects.get(pk=self.note.id)
@@ -93,17 +88,18 @@ class TestNotetEditDelete(BaseLogicTestCase):
         self.assertEqual(refreshed_note.text, self.note.text)
         self.assertEqual(refreshed_note.title, self.note.title)
         self.assertEqual(refreshed_note.slug, self.note.slug)
-        self.assertEqual(refreshed_note.author, self.author)
+        self.assertEqual(refreshed_note.author, self.note.author)
 
     def test_author_can_delete_note(self):
         note_count = Note.objects.count()
-        response = self.author_client.delete(self.delete_url)
+        response = self.author_client.delete(self.routes['delete'])
         self.assertRedirects(response, self.routes['success'])
         self.assertEqual(Note.objects.count(), note_count - 1)
 
     def test_user_cant_delete_another_note(self):
-        response = self.reader_client.delete(self.delete_url)
+        note_count_expected = Note.objects.count()
+        response = self.reader_client.delete(self.routes['delete'])
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
         note_count = Note.objects.count()
-        self.assertEqual(note_count, 1)
+        self.assertEqual(note_count, note_count_expected)
