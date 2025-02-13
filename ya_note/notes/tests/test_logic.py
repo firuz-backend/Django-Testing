@@ -1,6 +1,5 @@
 from http import HTTPStatus
 
-from django.contrib.auth import get_user_model
 from pytils.translit import slugify
 
 from notes.forms import WARNING
