@@ -1,4 +1,4 @@
-eal# 📝 Django Testing Project
+дуф📝 Django Testing Project
 
 Проект содержит набор тестов для двух Django-приложений: **YaNote** (заметки) и **YaNews** (новостной сайт).  
 В проекте реализовано тестирование с использованием двух фреймворков: **unittest** и **pytest**.
@@ -57,19 +57,26 @@ eal# 📝 Django Testing Project
    git clone git@github.com:ваш-аккаунт/django_testing.git
    cd django_testing
 
-Установите зависимости:
-pip install -r requirements.txt
+    Установите зависимости:
+    pip install -r requirements.txt
 
-Выполните миграции:
-python manage.py migrate
+    Выполните миграции:
+    python manage.py migrate
 
-🚀 Запуск тестов
+    🚀 Запуск тестов
 
-Для YaNote (unittest)
-python manage.py test
+    Для YaNote (unittest)
+    python manage.py test
 
-Для YaNews (pytest)
-pytest
+    Для YaNews (pytest)
+    pytest
 
 📑 Лицензия
 Проект создан в учебных целях.
+
+---
+
+📌 Автор
+
+    Firuz Dadabaev
+    GitHub: firuz-backend
